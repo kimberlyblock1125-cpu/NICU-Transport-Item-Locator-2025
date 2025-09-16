@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Item Locator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 50px;
+      text-align: center;
+      background-color: #f0f0f0;
+    }
+    input {
+      padding: 10px;
+      font-size: 16px;
+      width: 300px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-left: 10px;
+      cursor: pointer;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>NICU Transport Bag Item Locator</h1>
+  <p>Type the item you're looking for:</p>
+
+  <input type="text" id="searchInput" placeholder="e.g. Scissors">
+  <button onclick="searchItem()">Find</button>
+
+  <p id="result"></p>
+
+  <script>
+    const locations = {
+      "22g iv catheter": "Outside Top Compartment",
+      "24g iv catheter": "Outside Top Compartment",
+      "10cc flush": "Outside Top Compartment and Module 2-Needle/Syringe-Blue",
+      "IO needle": "Outside Top Compartment",
+      "microbore tubing": "Outside Top Compartment",
+      "iv start kit": "Outside Top Compartment",
+      "armboard": "Outside Top Compartment",
+      "heel warmer": "Outside Top Compartment",
+      "lancet": "Outside Top Compartment",
+      "iv extension tubing": "Outside Top Compartment and Module 4-Needle Aspiration-Red",
+      "23g butterfly needle": "Outside Top Compartment",
+      "25g butterfly needle": "Outside Top Compartment",
+      "butterfly needle": "Outside Top Compartment",
+      "green microtainer": "Outside Top Compartment",
+      "yellow microtainer": "Outside Top Compartment",
+      "purple microtainer": "Outside Top Compartment",
+      "green micro tube": "Outside Top Compartment",
+      "yellow micro tube": "Outside Top Compartment",
+      "purple micro tube": "Outside Top Compartment",
+      "blood culture vile": "Outside Top Compartment",
+      "blood transfer device": "Outside Top Compartment",
+      "d5": "Outside Top Compartment",
+      "d10": "Outside Top Compartment",
+      "normal saline bag": "Outside Top Compartment",
+      "3.5 uvc single lumen": "Outside Top Compartment",
+      "5 uvc single lumen": "Outside Top Compartment",
+      "5 uvc double lumen": "Outside Top Compartment",
+      "suture": "Outside Top Compartment",
+      "scalpel": "Outside Top Compartment",
+      "2x2 gauze": "Outside Top Compartment",
+      "umbilical tape": "Outside Top Compartment",
+      "umbilical bridge": "Outside Top Compartment",
+      "providone swabs": "Outside Top Compartment and Module 4-Needle Aspiration-Red and Module 8-Airway-Blue Square",
+      "iodine": "Outside Top Compartment and Module 4-Needle Aspiration-Red",
+      "tegaderm": "Outside Top Compartment and Module 4-Needle Aspiration-Red and Module 6-Supplies-Green",
+      "stopcock": "Outside Top Compartment",
+      "surgical tray": "Outside Bottom Compartment",
+      "reference sheets": "Outside Bottom Compartment",
+      "drape fenestrated": "Outside Bottom Compartment",
+      "ventilator circuit": "Outside Bottom Compartment",
+      "sterile gloves": "Module 1-PPE-Blue",
+      "masks": "Module 1-PPE-Blue",
+      "sterile gown": "Module 1-PPE-Blue",
+      "non-sterile gown": "Module 1-PPE-Blue",
+      "surgical cap": "Module 1-PPE-Blue",
+      "sterile water": "Module 2-Needle/Syringe-Blue and Module 7-Medications-Green",
+      "iv syringe": "Module 2-Needle/Syringe-Blue",
+      "1cc syringe": "Module 2-Needle/Syringe-Blue",
+      "3cc syringe": "Module 2-Needle/Syringe-Blue",
+      "5cc syringe": "Module 2-Needle/Syringe-Blue",
+      "10cc syringe": "Module 2-Needle/Syringe-Blue",
+      "30cc syringe": "Module 2-Needle/Syringe-Blue and Module 4-Needle Aspiration-Red",
+      "needle": "Module 2-Needle/Syringe-Blue",
+      "4 way stopcock": "Module 2-Needle/Syringe-Blue and Module 4-Needle Aspiration-Red",
+      "filter straws": "Module 2-Needle/Syringe-Blue",
+      "sodium cloride vials": "Module 2-Needle/Syringe-Blue",
+      "3cc flush": "Module 2-Needle/Syringe-Blue",
+      "suture removal kit": "Module 4-Needle Aspiration-Red",
+      "16g iv catheter": "Module 4-Needle Aspiration-Red",
+      "18g iv catheter": "Module 4-Needle Aspiration-Red",
+      "vaseline gauze": "Module 4-Needle Aspiration-Red",
+      "ballard suction": "Module 3-Suction-Blue",
+      "6f suction tubing": "Module 3-Suction-Blue",
+      "8f suction tubing": "Module 3-Suction-Blue",
+      "10f suction tubing": "Module 3-Suction-Blue",
+      "suction tubing": "Module 3-Suction-Blue",
+      "little sucker": "Module 3-Suction-Blue",
+      "bulb syringe": "Module 3-Suction-Blue",
+      "5 in 1 connector": "Module 3-Suction-Blue",
+      "y connector": "Module 3-Suction-Blue",
+      "meconium aspirator": "Module 3-Suction-Blue",
+      "mucus trap": "Module 3-Suction-Blue",
+      "neobar": "Module 5-Neobar-Green",
+      "adhesive remover wipes": "Module 5-Neobar-Green",
+      "barrier wipes": "Module 5-Neobar-Green",
+      "scissors": "Module 6-Supplies-Green",
+      "4x4 gauze": "Module 6-Supplies-Green",
+      "steri strips": "Module 6-Supplies-Green",
+      "lube": "Module 6-Supplies-Green",
+      "silk tape": "Module 6-Supplies-Green",
+      "3m tape": "Module 6-Supplies-Green and Module 8-Airway-Blue Square",
+      "bandaids": "Module 6-Supplies-Green",
+      "razor": "Module 6-Supplies-Green",
+      "ekg leads": "Module 6-Supplies-Green",
+      "ecg leads": "Module 6-Supplies-Green",
+      "ekg electrodes": "Module 6-Supplies-Green",
+      "ecg electrodes": "Module 6-Supplies-Green",
+      "spo2 probe": "Module 6-Supplies-Green",
+      "pulse ox": "Module 6-Supplies-Green",
+      "teddy bear": "Module 6-Supplies-Green",
+      "temp probe cover": "Module 6-Supplies-Green",
+      "temperature probe cover": "Module 6-Supplies-Green",
+      "bp cuff": "Module 6-Supplies-Green",
+      "blood pressure cuff": "Module 6-Supplies-Green",
+      "measuring tape": "Module 6-Supplies-Green",
+      "neowrap": "Module 6-Supplies-Green",
+      "neohelp": "Module 6-Supplies-Green",
+      "hat": "Module 6-Supplies-Green",
+      "pacifier": "Module 6-Supplies-Green",
+      "binky": "Module 6-Supplies-Green",
+      "urine bag": "Module 6-Supplies-Green",
+      "urine collection bag": "Module 6-Supplies-Green",
+      "cotton balls": "Module 6-Supplies-Green",
+      "ampicillin": "Module 7-Medications-Green",
+      "amp": "Module 7-Medications-Green",
+      "gentamycin": "Module 7-Medications-Green",
+      "gent": "Module 7-Medications-Green",
+      "epinephrine": "Module 7-Medications-Green",
+      "popamine": "Module 7-Medications-Green",
+      "epi": "Module 7-Medications-Green",
+      "dopa": "Module 7-Medications-Green",
+      "sucrose": "Module 7-Medications-Green",
+      "ram cannula": "Module 8-Airway-Blue Square",
+      "ett handle": "Module 8-Airway-Blue Square",
+      "ett blade": "Module 8-Airway-Blue Square",
+      "handle": "Module 8-Airway-Blue Square",
+      "blade": "Module 8-Airway-Blue Square",
+      "intubation supplies": "Module 8-Airway-Blue Square",
+      "stylet": "Module 8-Airway-Blue Square",
+      "et tubes": "Module 8-Airway-Blue Square",
+      "co2 detector": "Module 8-Airway-Blue Square",
+      "pedi cap": "Module 8-Airway-Blue Square",
+      "nasal cannula": "Module 8-Airway-Blue Square",
+      "oxygen tubing": "Module 8-Airway-Blue Square",
+      "sticky whiskers": "Module 8-Airway-Blue Square",
+      "christmas tree adapter": "Module 8-Airway-Blue Square",
+      "oxygen connector chemetron": "Module 8-Airway-Blue Square",
+      "saline nasal flush": "Module 8-Airway-Blue Square",
+      "saline bullet": "Module 8-Airway-Blue Square",
+      "chest drain": "Module 8-Airway-Blue Square",
+      "chest tube": "Module 8-Airway-Blue Square",
+      "forceps": "Module 8-Airway-Blue Square",
+      "abg kit": "Module 8-Airway-Blue Square",
+      "chlora-prep": "Module 8-Airway-Blue Square",
+      "chlorhexidine swab": "Module 8-Airway-Blue Square",
+      "chlorhexidine": "Module 8-Airway-Blue Square",
+      "bvm": "Loose in Main Compartment",
+      "bag valve mask": "Loose in Main Compartment",
+      "stethoscope": "Loose in Main Compartment",
+      "venoscope": "Loose in Main Compartment",
+      "transilluminator": "Loose in Main Compartment",
+      "thermometer": "Loose in Main Compartment",
+      "feeding tube": "Loose in Main Compartment",
+      "og tube": "Loose in Main Compartment",
+      "enteral syringe": "Loose in Main Compartment",
+      "feeding syringe": "Loose in Main Compartment",
+      "gastric decompression supplies": "Loose in Main Compartment"
+    };
+
+    function searchItem() {
+      const input = document.getElementById("searchInput").value.trim().toLowerCase();
+      const location = locations[input];
+
+      // Direct match first
+      if (locations[input]) {
+        bestMatch = input;
+      } else {
+        // Try to find a partial match
+        for (let key in locations) {
+          if (key.includes(input)) {
+            bestMatch = key;
+            break; // First match wins
+          }
+        }
+      }
+
+      if (bestMatch) {
+        document.getElementById("result").textContent = `📍 Location: ${locations[bestMatch]}`;
+      } else {
+        document.getElementById("result").textContent = "❌ Item not found.";
+      }
+    }
+  </script>
+
+</body>
+</html>
